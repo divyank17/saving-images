@@ -1,0 +1,73 @@
+import picamera
+from time import sleep
+import os
+import tty
+import sys
+import termios
+import RPi.GPIO as GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+
+try:
+    eye_no = sys.argv[0]
+except:
+    print("Please enter eye_no...")
+    print("Usage: python video.py <eye_no>")
+    exit()
+
+
+
+
+save_dir = "./eye_Dataset"
+directory = "./eye_Dataset/"+eye_no+"/"
+
+
+if not os.path.isdir(save_dir):
+    os.mkdir(save_dir)
+
+
+save_path = save_dir + "/" + eye_no + "_"
+
+
+
+camera = picamera.PiCamera()
+camera.resolution =(300,300)
+camera.sharpness = 50
+camera.contrast = 30
+camera.brightness =50
+camera.saturation = 20
+camera.ISO = 0
+camera.video_stabilization = True
+camera.exposure_compensation = 8
+camera.exposure_mode = 'auto'
+camera.meter_mode = 'average'
+camera.awb_mode = 'auto'
+camera.image_effect = 'none'
+camera.color_effects = None
+camera.rotation = 0
+
+count =1
+
+print('start priviewing...wait 1 sec')
+camera.start_preview()
+running = True
+sleep(1)
+
+while running:
+    key = sys.stdin.read(1)[0]
+    print(key)
+    
+    
+    if key=='1':
+        print ('exiting')
+        break
+    if key == '3':
+        directory = "./eye_Dataset/"+eye_no+"/"
+        try:
+            if os.path.exist(directory):
+                os.makedirs(directory)
+        except OSErrors:
+            camera.capture(directory )
+            count += 1
+            
+
